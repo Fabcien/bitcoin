@@ -166,14 +166,11 @@ if [ "${RUN_TIDY}" = "true" ]; then
   python3 "${DIR_IWYU}/include-what-you-use/iwyu_tool.py" \
            -p . "${MAKEJOBS}" \
            -- -Xiwyu --cxx17ns -Xiwyu --mapping_file="${BASE_BUILD_DIR}/bitcoin-$HOST/contrib/devtools/iwyu/bitcoin.core.imp" \
+           -Xiwyu --max_line_length=160 \
            2>&1 | tee /tmp/iwyu_ci.out
   cd "${BASE_ROOT_DIR}/src"
   python3 "${DIR_IWYU}/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
   git --no-pager diff
-fi
-
-if [ "$RUN_SECURITY_TESTS" = "true" ]; then
-  make test-security-check
 fi
 
 if [ "$RUN_FUZZ_TESTS" = "true" ]; then
